@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>course</title>
+    <!-- 引入 ECharts 文件 -->
+    <script src="js/echarts.min.js"></script>
+    <!-- 引入 jQuery 文件 -->
+    <script src="js/jquery.js"></script>
+</head>
+<body>
+<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+<div id="main" style="width: 600px;height:400px;position: absolute; top:50%; left: 50%; margin-top: -200px;margin-left: -300px"></div>
+
+<script type="text/javascript">
+    setInterval(fresh(), 100);
+
+    function fresh() {
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+        // 指定图表的配置项和数据
+        var option = {
+            title : {
+                text: '实战课程实时访问量统计',
+                subtext: '实战课程访问次数',
+                x:'center'
+            },
+            tooltip : {
+                trigger: 'item',
+                formatter: "{a} <br/>{b} : {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left'
+                // data: [
+                //     "基于Storm构建实时热力分布项目实战",
+                //     "商业级支付宝小程序入门与实战",
+                //     "Zookeeper源码分析",
+                //     "精讲Elastic-job + Quartz实现企业级定时任务",
+                //     "Python前后端分离开发Vue+Django REST framework实战",
+                //     "Spark Streaming实时流处理项目实战",
+                //     "以慕课网日志分析为例 进入大数据Spark SQL的世界",
+                //     "深度学习之神经网络核心原理与算法",
+                //     "基于Spring Cloud微服务架构 广告系统设计与实现",
+                //     "Node.js开发仿知乎服务端 深入理解RESTful API",
+                //     "阿里新零售数据库设计与实战",
+                //     "Node.js入门到企业Web开发中的应用",
+                //     "Google老师亲授 TensorFlow2.0 入门到进阶",
+                //     "编程必备基础知识 计算机组成原理+操作系统+计算机网络",
+                //     "学习Scala进击大数据Spark生态圈",
+                //     "Angular8开发拼多多webapp 从基础到项目实战",
+                //     "全流程开发 GO实战电商网站高并发秒杀系统",
+                //     "Spring Cloud Alibaba微服务从入门到进阶",
+                //     "强力Django + 杀手级xadmin开发在线教育网站",
+                //     "Spring Boot仿抖音短视频小程序开发 全栈式实战项目",
+                //     "10小时入门大数据",
+                //     "Python3实战Spark大数据分析及调度",
+                //     "Java Web自动化测试 Selenium基础到企业实际应用"
+                // ]
+            },
+            series : [
+                {
+                    name: '访问次数',
+                    type: 'pie',
+                    radius : '55%',
+                    center: ['50%', '60%'],
+                    data: (function(){
+                        var datas = [];
+                        $.ajax({
+                            type: "GET",
+                            url: "/course/getcourseCount",
+                            dataType: 'json',
+                            async: false,
+                            success: function(result) {
+                                for(let index of result) {
+                                    datas.push({"value": index['value'], "name": index['name']})
+                                }
+                            }
+                        });
+                        return datas;
+                    })(),
+                    itemStyle: {
+                        emphasis: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    }
+
+</script>
+</body>
+</html>
